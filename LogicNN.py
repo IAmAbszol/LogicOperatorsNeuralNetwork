@@ -4,6 +4,9 @@ import pandas as pd
 import argparse
 import time
 
+# Disable chain indexing warning - Not highly advised unless you know what your doing.
+pd.options.mode.chained_assignment = None
+
 parse = argparse.ArgumentParser()
 parse.add_argument("-a", "--and", action="store_true", help="evaluate 'and' logic gate.")
 parse.add_argument("-o", "--or", action="store_true", help="evaluate 'or' logic gate.")
@@ -15,9 +18,9 @@ if args["or"]:
 	train_logic = 1
 elif args["xor"]:
 	train_logic= 2
-print(train_logic)
+
 # neurons
-input_layer = 2
+input_layer = 3
 hidden_layer = 4
 output_layer = 1
 
@@ -25,7 +28,10 @@ output_layer = 1
 dataset = pd.read_csv('Logic.csv', sep=',')
 values = list(dataset.columns.values)
 
-X_input = np.array(dataset[values[0:2]]).tolist()
+# Grab first two columns and add additional column to directly link operator to input data set
+X = dataset[values[0:2]]
+X['o'] = pd.Series([train_logic for i in range(len(X['x'])) ], index=X.index)
+X_input = np.array(X)
 
 # change to operator column to train on
 y_output = np.array(dataset[values[train_logic + 2]])
@@ -36,8 +42,8 @@ y_output = y_test[:]
 
 # Define initializers, used later for training predictions
 # initialize to float32 for tensorflows used tensor datatype to be compatible
-X_data = tf.placeholder(tf.float32, shape=[None,2], name='x-inputdata')
-y_target = tf.placeholder(tf.float32, shape=[None,1], name='y-targetdata')
+X_data = tf.placeholder(tf.float32, shape=[None,input_layer], name='x-inputdata')
+y_target = tf.placeholder(tf.float32, shape=[None,output_layer], name='y-targetdata')
 
 # Randomly distribute within the shape input_layer,hidden_layer --> -1 to 1
 # https://www.tensorflow.org/api_docs/python/tf/random_uniform
@@ -67,7 +73,7 @@ saver = tf.train.Saver()
 
 with tf.Session() as sess:
 
-	saver.restore(sess, "./saves/{}.ckpt".format(values[train_logic + 2]))
+	saver.restore(sess, "./saves/logic.ckpt")
 
 	print("Testing {} operator.".format(values[train_logic + 2]))
 	for i in range(len(y_output)):
