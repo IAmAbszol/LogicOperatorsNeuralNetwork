@@ -20,7 +20,7 @@ values = list(dataset.columns.values)
 X = dataset[values[0:2]]
 X['o'] = pd.Series([0 for i in range(len(X['x'])) ], index=X.index)
 copier = deepcopy(X)
-for i in range(2):
+for i in range(len(values) - 3):
 	copier['o'] = [(i + 1)] * len(copier['o'])
 	for j in range(len(copier)):
 		X.loc[len(X)] = copier.loc[j]

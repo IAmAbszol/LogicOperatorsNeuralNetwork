@@ -11,6 +11,7 @@ parse = argparse.ArgumentParser()
 parse.add_argument("-a", "--and", action="store_true", help="evaluate 'and' logic gate.")
 parse.add_argument("-o", "--or", action="store_true", help="evaluate 'or' logic gate.")
 parse.add_argument("-x", "--xor", action="store_true", help="evaluate 'xor' logic gate.")
+parse.add_argument("-n", "--not", action="store_true", help="evaluate 'not' logic gate, compared to x input.")
 args = vars(parse.parse_args())
 
 train_logic = 0
@@ -18,6 +19,8 @@ if args["or"]:
 	train_logic = 1
 elif args["xor"]:
 	train_logic= 2
+elif args["not"]:
+	train_logic = 3
 
 # neurons
 input_layer = 3
@@ -76,5 +79,5 @@ with tf.Session() as sess:
 	saver.restore(sess, "./saves/logic.ckpt")
 
 	print("Testing {} operator.".format(values[train_logic + 2]))
-	for i in range(len(y_output)):
-		print("Actual: ", y_output[i], "Predicted: ", np.rint(sess.run(hypothesis, feed_dict={X_data : [X_input[i]]})))
+	for i in range(len(X_input)):
+		print("Input {} and {}, operator {} --> Actual: ".format(X_input[i][0], X_input[i][1], values[X_input[i][2] + 2]), y_output[i], "Predicted: ", np.rint(sess.run(hypothesis, feed_dict={X_data : [X_input[i]]})))
