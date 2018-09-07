@@ -13,11 +13,13 @@ A Neural Network that learns logic operators based on training sessions provided
 <ol>
   <li>Unzip LogicNN.zip</li>
   <li>Optional: Create <b>conda</b> environment.</li>
-  <li>python train.py -a/-o/-x to train specific operator</li>
-  <li>python LogicNN.py -a/-o/-x to test specific operator</li>
+  <li>Optional: Add more operators within Logic.csv, <b>not</b> operator can work.</li>
+  <li>run python train.py</li>
+  <li>run python LogicNN.py -a/-o/-x to test specific operator. Add more for newer operators.</li>
 </ol>
 
 <h3>Notes</h3>
-<ul>
-  <li>Previous train.py was ran to train <b>all</b> operators but it seems tensorflows library is separate from the program, possibly causing it to fail the training session. The first operator will be trained then the following are incorrect, swap the commenting to understand more on this issue. (Swap for and if True)</li>
-</ul>
+<p>
+The newly trained network differs from the intial commit as training isn't segmented, rather, the training 
+is now grouped together and identified by column index relative to the operators subset within the Logic.csv file.
+</p>
